@@ -132,6 +132,23 @@ REST_FRAMEWORK = {
     #     'rest_framework.permissions.IsAdminUser',
     # ],
     'DEFAULT_AUTHENTICATION_CLASSES': [
+        # 'rest_framework_simplejwt.authentication.JWTAuthentication',
         'rest_framework.authentication.TokenAuthentication',
     ],
+    # 'DEFAULT_THROTTLE_CLASSES': [
+    #     'rest_framework.throttling.AnonRateThrottle',
+    #     'rest_framework.throttling.UserRateThrottle'
+    # ],
+    'DEFAULT_THROTTLE_RATES': {
+        'anon': '5/day',
+        'user': '10/day',
+        'review-create' : '1/day',
+        'review-list' : '10/day',
+        'review-detail' : '2/day',
+    }
 }
+
+# https://django-rest-framework-simplejwt.readthedocs.io/en/latest/settings.html#refresh-token-lifetime
+# SIMPLE_JWT = {
+#     'ROTATE_REFRESH_TOKENS' : True
+# }

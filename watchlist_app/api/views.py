@@ -9,17 +9,36 @@ from rest_framework import status
 from rest_framework import mixins
 from rest_framework import generics
 from rest_framework import viewsets
+# ScopedRateThrottle สามารถสร้าง throttle Scope ภายในไฟล์นี้ได้เลยโดยไม่ต้องสร้าง class * CTRL + F ScopedRateThrottle * ตั้งจำนวนการ request ได้ที่หน้า setting.py
+from rest_framework.throttling import UserRateThrottle, AnonRateThrottle, ScopedRateThrottle
 from rest_framework.permissions import IsAuthenticated, IsAuthenticatedOrReadOnly
 from django.shortcuts import get_object_or_404
 from watchlist_app.api.permission import IsAdminorReadOnly, IsReviewUserorReadOnly
+from watchlist_app.api.throtting import *
 # from watchmate.watchlist_app.api.permission import IsAdminorReadOnly
 
 #################### Class-based views ####################
 
+class UserReview(generics.ListAPIView):
+    # throttle_classes = [ReviewListThrotting, AnonRateThrottle]
+    # queryset = Review.objects.all()
+    serializer_class = ReviewSerializer
+    # permission_classes = [IsAuthenticated]
+    
+    # def get_queryset(self):
+    #     username = self.kwargs['username']
+    #     # review_user เป็น ForeignKey ถ้าต้องการเข้าถึงข้อมูลของตัวที่เป็นตัวถูกอ้างถึงให้ใช้ __ [Underscore 2 ตัว] ต่อด้วย columnname ที่ต้องการเข้าถึง เช่น username
+    #     return Review.objects.filter(review_user__username = username)
+    
+    def get_queryset(self):
+        username = self.request.query_params.get('username')
+        return Review.objects.filter(review_user__username = username)
+    
 class ReviewCreate(generics.CreateAPIView):
     
     permission_classes = [IsAuthenticated]
-    
+    # ใช้สำหรับจำกัดจำนวนการ Request
+    throttle_classes = [ReviewCreateThrotting]
     serializer_class = ReviewSerializer
     
     ''' perform_create ใช้สำหรับการ create ข้อมูล [ POST ] Request 
@@ -51,6 +70,7 @@ class ReviewCreate(generics.CreateAPIView):
 ''' https://www.django-rest-framework.org/api-guide/generic-views/#listcreateapiview '''
 
 class ReviewList(generics.ListCreateAPIView):
+    throttle_classes = [ReviewListThrotting, AnonRateThrottle]
     # queryset = Review.objects.all()
     serializer_class = ReviewSerializer
     # permission_classes = [IsAuthenticated]
@@ -61,8 +81,10 @@ class ReviewList(generics.ListCreateAPIView):
     
 class ReviewDetail(generics.RetrieveUpdateDestroyAPIView):
     permission_classes = [IsReviewUserorReadOnly]
+    throttle_classes = [ScopedRateThrottle]
     queryset = Review.objects.all()
     serializer_class = ReviewSerializer
+    throttle_scope = 'review-detail'
 
 # class ReviewDetail(mixins.RetrieveModelMixin, generics.GenericAPIView):
     

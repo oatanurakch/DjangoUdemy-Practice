@@ -22,6 +22,12 @@ urlpatterns = [
     path('<int:pk>/reviews', ReviewList.as_view(), name = 'review-list'),
     path('review/<int:pk>', ReviewDetail.as_view(), name = 'review-detail'),
     
+    # ตัวนี้เป็นการใช้กับ get_queryset Filtering against the URL
+    # path('review/<str:username>', UserReview.as_view(), name = 'user-review-detail'),
+    
+    # ตัวนี้ใช้ร่วมกับ self.request.query_params.get(parameter) Filtering against query parameters
+    path('review/', UserReview.as_view(), name = 'user-review-detail'),
+    
 ]
 
 #################### Class-based views ####################
