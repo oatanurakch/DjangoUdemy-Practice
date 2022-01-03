@@ -1,4 +1,4 @@
-from rest_framework.pagination import PageNumberPagination, LimitOffsetPagination
+from rest_framework.pagination import PageNumberPagination, LimitOffsetPagination, CursorPagination
 
 # อ่านรายละเอียดได้ที่ https://www.django-rest-framework.org/api-guide/pagination/#pagenumberpagination
 
@@ -26,3 +26,11 @@ class WatchListLimitOffsetPagination(LimitOffsetPagination):
     # ใชำสำหรับตั้งค่า parameter ในการเรียกใช้ตัวเริ่มต้นสำหรับการ filter ข้อมูลมาแสดงผล
     offset_query_param = 'start'
     
+class WatchListCursorPagination(CursorPagination):
+    # CursorPagination เรียงข้อมูลแบบ -create หรือเรียงจากข้อมูลใหม่สุดไปเก่าสุด
+    # ใช้สำหรับตั้งค่าจำนวนข้อมูลในแต่ละหน้า
+    page_size = 5
+    # ordering ใช้สำหรับตั้งลักษณะของการเรียงข้อมูล
+    ordering = 'created'
+    # ใช้สำหรับตั้งค่าชื่อของ parameter ของ cursor [ ถ้าไม่ตั้งอะไรจะเป็น cursor ]
+    cursor_query_param = 'record'

@@ -22,7 +22,7 @@ class WatchList(models.Model):
     created = models.DateTimeField(auto_now_add = True)
     
     def __str__(self):
-        return f'{self.title}'
+        return f'{self.id} - {self.title}'
     
 class Review(models.Model):
     review_user = models.ForeignKey(User, on_delete = models.CASCADE)

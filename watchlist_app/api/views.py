@@ -52,7 +52,7 @@ class ReviewCreate(generics.CreateAPIView):
     def perform_create(self,serializer):
         
         pk = self.kwargs.get('pk')
-        watchlist = WatchList.objects.get(pk = pk)
+        watchlist = WatchList.objects.get(pk=pk)
         
         review_user = self.request.user
         review_queryset = Review.objects.filter(watchlist = watchlist, review_user = review_user)
@@ -203,12 +203,19 @@ class StreamPlatformDetailAV(APIView):
 #     ordering_fields = ['avg_rating']
 #     serializer_class = WatchListSerializer
 
-class WatchList(generics.ListCreateAPIView):
+# class WatchList(generics.ListCreateAPIView):
+#     queryset = WatchList.objects.all()
+#     filter_backends = [filters.OrderingFilter]
+#     pagination_class = WatchListLimitOffsetPagination
+#     ordering_fields = ['avg_rating']
+#     serializer_class = WatchListSerializer
+
+# การใช้ CursorPagination ต้องลบการ filter ออก
+class WatchListPG(generics.ListCreateAPIView):
     queryset = WatchList.objects.all()
-    filter_backends = [filters.OrderingFilter]
-    pagination_class = WatchListLimitOffsetPagination
-    ordering_fields = ['avg_rating']
+    pagination_class = WatchListCursorPagination
     serializer_class = WatchListSerializer
+    
 class WatchListAV(APIView):
     
     permission_classes = [IsAdminorReadOnly]

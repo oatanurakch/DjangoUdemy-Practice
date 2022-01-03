@@ -11,7 +11,7 @@ router.register('stream', StreamPlatformVS, basename = 'steamplatform')
 urlpatterns = [
     path('list/', WatchListAV.as_view(), name = 'movie-list'),
     path('<int:pk>', WatchListDetailAV.as_view(), name = 'movie-detail'),
-    path('list2/', WatchList.as_view(), name = 'movie-list'),
+    path('list2/', WatchListPG.as_view(), name = 'movie-list'),
     path('', include(router.urls)),
     # path('stream/', StreamPlatformAV.as_view(), name = 'streamplatform'),
     # path('stream/<int:pk>', StreamPlatformDetailAV.as_view(), name = 'streamplatform-detail'),

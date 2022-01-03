@@ -151,6 +151,12 @@ REST_FRAMEWORK = {
     # ใช้สำหรับสร้างหน้า API โดยกำหนดข้อมูลต่อ 1 หน้า
     # 'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.LimitOffsetPagination',
     # 'PAGE_SIZE': 5,
+    
+    # ปิดการใช้งานการแสดงผลแบบ Rest-Framework ผ่าน Browser แต่ให้ตอบกลับเป็นแบบ JSON แทน
+    #  https://stackoverflow.com/questions/11898065/how-to-disable-admin-style-browsable-interface-of-django-rest-framework
+    'DEFAULT_RENDERER_CLASSES': (
+        'rest_framework.renderers.JSONRenderer',
+    ),
 }
 
 # https://django-rest-framework-simplejwt.readthedocs.io/en/latest/settings.html#refresh-token-lifetime
