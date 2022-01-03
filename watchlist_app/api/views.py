@@ -42,7 +42,7 @@ class ReviewCreate(generics.CreateAPIView):
     
     permission_classes = [IsAuthenticated]
     # ใช้สำหรับจำกัดจำนวนการ Request
-    throttle_classes = [ReviewCreateThrotting]
+    # throttle_classes = [ReviewCreateThrotting]
     serializer_class = ReviewSerializer
     
     ''' perform_create ใช้สำหรับการ create ข้อมูล [ POST ] Request 
