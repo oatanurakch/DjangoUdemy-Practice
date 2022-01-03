@@ -5,14 +5,18 @@ from rest_framework.response import Response
 from rest_framework.exceptions import ValidationError
 # from rest_framework.decorators import api_view
 from rest_framework.views import APIView
-from rest_framework import status
+from rest_framework import pagination, status
 from rest_framework import mixins
 from rest_framework import generics
 from rest_framework import viewsets
+from rest_framework import filters
 # ScopedRateThrottle สามารถสร้าง throttle Scope ภายในไฟล์นี้ได้เลยโดยไม่ต้องสร้าง class * CTRL + F ScopedRateThrottle * ตั้งจำนวนการ request ได้ที่หน้า setting.py
 from rest_framework.throttling import UserRateThrottle, AnonRateThrottle, ScopedRateThrottle
 from rest_framework.permissions import IsAuthenticated, IsAuthenticatedOrReadOnly
 from django.shortcuts import get_object_or_404
+from django_filters.rest_framework import DjangoFilterBackend
+
+from watchlist_app.api.pagination import *
 from watchlist_app.api.permission import IsAdminorReadOnly, IsReviewUserorReadOnly
 from watchlist_app.api.throtting import *
 # from watchmate.watchlist_app.api.permission import IsAdminorReadOnly
@@ -70,7 +74,9 @@ class ReviewCreate(generics.CreateAPIView):
 ''' https://www.django-rest-framework.org/api-guide/generic-views/#listcreateapiview '''
 
 class ReviewList(generics.ListCreateAPIView):
-    throttle_classes = [ReviewListThrotting, AnonRateThrottle]
+    filter_backends = [DjangoFilterBackend]
+    filterset_fields = ['review_user__username', 'active']
+    # throttle_classes = [ReviewListThrotting, AnonRateThrottle]
     # queryset = Review.objects.all()
     serializer_class = ReviewSerializer
     # permission_classes = [IsAuthenticated]
@@ -177,8 +183,32 @@ class StreamPlatformDetailAV(APIView):
         platform = StreamPlatform.objects.get(pk = pk)
         platform.delete()
         return Response(status = status.HTTP_204_NO_CONTENT)
-        
 
+# ตัวอย่างในการ Search Function 
+# class WatchList(generics.ListCreateAPIView):
+#     queryset = WatchList.objects.all()
+#     filter_backends = [filters.SearchFilter]
+#     # สามารถใช้ = สำหรับการ Search ที่ต้องมีข้อความตรงกันแบบ 100% เท่านั้น
+#     # เช่น search_fields = ['title', '=platform__name']
+#     search_fields = ['title', 'platform__name']
+#     # throttle_classes = [ReviewListThrotting, AnonRateThrottle]
+#     serializer_class = WatchListSerializer
+#     # permission_classes = [IsAuthenticated]
+
+# ตัวอย่างการทำ Ordering filter
+# class WatchList(generics.ListCreateAPIView):
+#     queryset = WatchList.objects.all()
+#     filter_backends = [filters.OrderingFilter]
+#     # ในการ Seacrch สามารถใช้เครื่องหมาย - ในการเรียงลำดับจากมากไปน้อยได้ด้วย
+#     ordering_fields = ['avg_rating']
+#     serializer_class = WatchListSerializer
+
+class WatchList(generics.ListCreateAPIView):
+    queryset = WatchList.objects.all()
+    filter_backends = [filters.OrderingFilter]
+    pagination_class = WatchListLimitOffsetPagination
+    ordering_fields = ['avg_rating']
+    serializer_class = WatchListSerializer
 class WatchListAV(APIView):
     
     permission_classes = [IsAdminorReadOnly]

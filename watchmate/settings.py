@@ -40,6 +40,7 @@ INSTALLED_APPS = [
     'watchlist_app',
     'rest_framework',
     'rest_framework.authtoken',
+    'django_filters',
 ]
 
 MIDDLEWARE = [
@@ -145,7 +146,11 @@ REST_FRAMEWORK = {
         'review-create' : '1/day',
         'review-list' : '10/day',
         'review-detail' : '2/day',
-    }
+    },
+    
+    # ใช้สำหรับสร้างหน้า API โดยกำหนดข้อมูลต่อ 1 หน้า
+    # 'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.LimitOffsetPagination',
+    # 'PAGE_SIZE': 5,
 }
 
 # https://django-rest-framework-simplejwt.readthedocs.io/en/latest/settings.html#refresh-token-lifetime

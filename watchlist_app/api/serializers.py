@@ -15,8 +15,12 @@ class WatchListSerializer(serializers.ModelSerializer):
     ''' len_name เป็นตัวแปรที่ประกาศไว้เพื่อจะดำเนินการอะไรบางอย่างกับข้อมูลที่อยู่ใน model ของเรา '''
     # len_name = serializers.SerializerMethodField()
     
-    # Show rating point of movie
-    reviews = ReviewSerializer(many = True, read_only = True)
+    # Show rating point of movie"
+    # reviews = ReviewSerializer(many = True, read_only = True)
+    
+    # serializers.Charfield() สามารถใช้ในการแสดงผลข้อมูลถูก ForeignKey มา สามารถเลือกได้ว่าจะคืนค่าตัวใดบ้าง เช่น platform.name ก็คือแสดงผล name
+    # ที่ถูกผูกเข้ากับ platform นั้นเลย
+    platform = serializers.CharField(source = 'platform.name')
     
     class Meta:
         model = WatchList
